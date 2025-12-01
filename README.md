@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Telegram & Twitter News Bot
 
 A bot that crawls content from Telegram channels and Twitter accounts, with AI-powered summarization capabilities.
@@ -203,3 +204,7 @@ python bot.py
 ## License
 
 This project is for personal use.
+=======
+# telegram-bot-news
+24 hours update bot 
+>>>>>>> 103cc4e33f71cae901f9946ecb10f2a6f0469d73
