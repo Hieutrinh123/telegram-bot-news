@@ -1,0 +1,11 @@
+# List of Telegram channels to crawl (one per line)
+# Lines starting with # are comments and will be ignored
+# You can use @ or just the channel name
+
+infinityhedge
+overheardonct
+iansintel
+TreeNewsFeed
+nansen_digest
+
+

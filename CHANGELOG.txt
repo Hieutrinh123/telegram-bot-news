@@ -1,0 +1,182 @@
+# CHANGELOG
+
+All notable changes to the Telegram & Twitter News Bot project.
+
+================================================================================
+## [2025-11-28] - Summary Formatting Updates
+================================================================================
+
+### Changed
+- Updated Summary Format
+  * Changed section headers to "Daily news:" and "Onchain actions:"
+  * Reverted bullet points to hyphens (-)
+  * Ensured links are formatted as clickable "(link)" text
+
+================================================================================
+## [2025-11-27] - Configuration & Formatting Updates
+================================================================================
+
+### Changed
+- Updated Configuration
+  * Moved channel configuration files to `news source/` directory
+  * Updated `config.py` to load `tele_channels.txt` and `twitter_channels.txt` from the new location
+
+- Updated Bullet Point Format
+  * Changed bullet points from hyphens (-) to asterisks (*) in both News and Onchain sections
+
+- Updated Onchain Analysis Format
+  * Removed duplicate volume display at the end of descriptions
+  * Changed link format to `description (link)` where "link" is clickable
+  * Updated AI prompt to extract t.co links from tweet text instead of using tweet URLs
+
+================================================================================
+## [2025-11-26] - Onchain Analysis Enhancements
+================================================================================
+
+### Changed
+- Updated onchain_analyzer.py
+  * Increased top movements from 3 to 5
+  * Added hyperlinks to original tweets in the summary
+  * Updated analysis prompt to include tweet URLs
+  * Formatted output as `[Description](URL)` for Telegram markdown support
+
+================================================================================
+## [2025-11-26] - Twitter Integration Fixes & Optimization
+================================================================================
+
+### Fixed
+- Twitter Crawler Timezone Logic
+  * Fixed issue where tweets were incorrectly filtered out due to timezone mismatch
+  * Now uses UTC for both current time and tweet timestamps
+  * Ensures accurate 24-hour window filtering regardless of server location
+
+- Onchain Analyzer JSON Parsing
+  * Improved parsing to handle single-object responses from AI
+  * Prevents "0 movements found" error when AI returns a single result
+  * Added fallback logic for various JSON structures
+
+- OpenRouter Credit Optimization
+  * Reduced max_tokens from 1000 to 300 in onchain_analyzer.py
+  * Prevents 402 Insufficient Credits errors
+  * Optimized for cost efficiency while maintaining functionality
+
+================================================================================
+## [2025-11-26] - Twitter Integration & Onchain Analysis
+================================================================================
+
+### Added
+- Created onchain_analyzer.py
+  * Uses OpenRouter API (GPT-4) to analyze tweets
+  * Extracts onchain movements (buy/sell/transfer)
+  * Identifies USD volume and ranks top 3 movements
+  * Returns structured data for summary
+
+### Changed
+- Updated summarizer.py
+  * Added summarize_all() method to handle both Telegram and Twitter data
+  * Updated output format to include "News" and "Onchain Actions" sections
+  * Maintained backward compatibility with summarize_messages()
+
+- Updated scheduler.py
+  * Integrated Twitter crawling into daily workflow
+  * Updates startup banner to show monitored Twitter accounts
+  * Uses new combined summarization workflow
+
+- Updated twitter_crawler.py
+  * Added rate limiting (6s delay) to respect free tier limits
+  * Fixed 429 Too Many Requests errors
+
+================================================================================
+## [2025-11-26] - Twitter Crawler Implementation
+================================================================================
+
+### Added
+- Created standalone Twitter crawler (twitter_crawler.py)
+  * Fetches tweets from specified Twitter accounts using TwitterAPI.io
+  * Filters out replies - only original tweets
+  * Time-based filtering - only tweets from last 24 hours
+  * Full tweet metadata: text, date, likes, retweets, URL
+  
+- Created twitter_channels.txt configuration file
+  * One account per line format
+  * Supports comments (lines starting with #)
+  * Automatically strips @ symbols
+  * Initial test account: Cbb0fe
+
+- Updated config.py with Twitter configuration
+  * Added TWITTER_API_KEY constant
+  * Added load_twitter_accounts() method
+  * Added TWITTER_ACCOUNTS list loaded from file
+
+- Updated requirements.txt
+  * Added requests==2.31.0 for HTTP API calls
+  * Added python-dateutil==2.8.2 for timestamp parsing
+
+### Changed
+- Renamed channels.txt to tele_channels.txt
+  * Separates Telegram and Twitter channel configurations
+  * Updated config.py to reference new filename
+
+- Updated README.md
+  * Restructured to separate Telegram and Twitter features
+  * Added dedicated sections for each crawler
+  * Updated project structure documentation
+  * Added separate troubleshooting sections
+
+### Fixed
+- Twitter API integration issues
+  * Fixed parameter name from 'username' to 'userName' (camelCase)
+  * Fixed response field names: isReply, createdAt, likeCount, retweetCount
+  * Added proper error handling and debug logging
+
+### Technical Details
+- Twitter crawler uses TwitterAPI.io endpoint: /twitter/user/last_tweets
+- Authentication via X-API-Key header
+- Fetches up to 50 tweets per account, filters to last 24 hours
+- Async implementation for consistency with Telegram crawler
+- Standalone - not integrated with main bot (as requested)
+
+================================================================================
+## [Previous] - Telegram News Bot
+================================================================================
+
+### Existing Features
+- Telegram channel crawler (crawler.py)
+  * Crawls messages from last 24 hours
+  * Uses Telethon for channel access
+  * Configured via tele_channels.txt
+
+- AI-powered summarization (summarizer.py)
+  * Uses OpenRouter API with GPT-4
+  * Generates concise bullet-point summaries
+
+- Automated scheduling (scheduler.py)
+  * Daily summary posts at configured time
+  * Default: 09:00 daily
+
+- Bot posting (bot.py)
+  * Posts summaries to target Telegram channel
+  * Uses python-telegram-bot library
+
+================================================================================
+## Project Structure
+================================================================================
+
+telegram-news-bot/
+├── main.py                  # Entry point for Telegram bot
+├── config.py                # Configuration management
+├── crawler.py               # Telegram channel crawler
+├── twitter_crawler.py       # Twitter account crawler (UPDATED)
+├── onchain_analyzer.py      # Onchain movement analyzer (UPDATED)
+├── summarizer.py            # AI-powered summarization (UPDATED)
+├── bot.py                   # Telegram bot for posting
+├── scheduler.py             # Daily scheduling logic (UPDATED)
+├── tele_channels.txt        # Telegram channels list
+├── twitter_channels.txt     # Twitter accounts list
+├── requirements.txt         # Python dependencies
+├── README.md                # Documentation
+├── CHANGELOG.txt            # Project history (UPDATED)
+├── .env                     # Environment variables
+└── .env.example             # Environment template
+
+================================================================================

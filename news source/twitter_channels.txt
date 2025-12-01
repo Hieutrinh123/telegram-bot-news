@@ -1,0 +1,10 @@
+# List of Twitter accounts to crawl (one per line)
+# Lines starting with # are comments and will be ignored
+# You can use @ or just the username
+
+# Add more accounts below:
+# example_account
+# another_account
+mlmabc
+lookonchain
+OnchainDataNerd 
