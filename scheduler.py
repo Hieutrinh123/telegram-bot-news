@@ -5,17 +5,22 @@ import asyncio
 import schedule
 import time
 from datetime import datetime
+from pytz import timezone
 from crawler import crawl_channels
 from summarizer import summarize_messages
 from bot import send_summary
 from config import Config
+
+# Define timezone (UTC+7 = Asia/Bangkok, Asia/Ho_Chi_Minh, etc.)
+ICT = timezone('Asia/Bangkok')
 
 async def run_daily_summary():
     """
     Main workflow: Crawl channels → Summarize → Post to channel
     """
     print("\n" + "="*60)
-    print(f"🚀 Starting daily summary job at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    now_ict = datetime.now(ICT)
+    print(f"🚀 Starting daily summary job at {now_ict.strftime('%Y-%m-%d %H:%M:%S %Z')}")
     print("="*60 + "\n")
     
     try:
@@ -74,7 +79,7 @@ def run_scheduler():
     print(f"📡 Monitoring Telegram: {', '.join(['@' + ch for ch in Config.SOURCE_CHANNELS])}")
     print(f"🐦 Monitoring Twitter: {', '.join(['@' + acc for acc in Config.TWITTER_ACCOUNTS])}")
     print(f"📤 Posting to: {Config.TARGET_CHANNEL_ID}")
-    print(f"⏰ Schedule: Daily at {Config.SUMMARY_HOUR:02d}:{Config.SUMMARY_MINUTE:02d}")
+    print(f"⏰ Schedule: Daily at {Config.SUMMARY_HOUR:02d}:{Config.SUMMARY_MINUTE:02d} ICT (UTC+7)")
     print("="*60 + "\n")
     
     # Schedule the daily job

@@ -16,7 +16,7 @@ def print_banner():
     print("="*60)
     print(f"  📡 Source Channels: {', '.join(['@' + ch for ch in Config.SOURCE_CHANNELS])}")
     print(f"  📤 Target Channel: {Config.TARGET_CHANNEL_ID}")
-    print(f"  ⏰ Schedule: Daily at {Config.SUMMARY_HOUR:02d}:{Config.SUMMARY_MINUTE:02d}")
+    print(f"  ⏰ Schedule: Daily at {Config.SUMMARY_HOUR:02d}:{Config.SUMMARY_MINUTE:02d} ICT (UTC+7)")
     print("="*60 + "\n")
 
 def print_help():
