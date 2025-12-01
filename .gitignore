@@ -34,6 +34,9 @@ uv.lock
 # Telegram session files
 *.session
 *.session-journal
+sessions/*.session
+sessions/*.session-journal
+!sessions/README.md
 
 # IDE
 .vscode/

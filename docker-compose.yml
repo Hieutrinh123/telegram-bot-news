@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  telegram-bot:
+    build: .
+    container_name: telegram-bot-news
+    restart: unless-stopped
+
+    # Environment variables from .env file
+    env_file:
+      - .env
+
+    # Mount volume for persistent session files
+    volumes:
+      - ./sessions:/app/sessions
+      - ./news-source:/app/news-source
+
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "uv", "run", "python", "health_check.py"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    # Optional: Run with specific command
+    # command: uv run python main.py --now

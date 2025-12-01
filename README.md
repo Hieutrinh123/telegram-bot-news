@@ -118,6 +118,22 @@ This will:
 
 ## Installation
 
+### Using Docker (Easiest for Production)
+
+```bash
+# 1. Configure environment
+cp .env.example .env
+nano .env  # Fill in your credentials
+
+# 2. Build and run
+docker-compose up -d
+
+# 3. View logs
+docker-compose logs -f
+```
+
+See [DOCKER.md](DOCKER.md) for complete Docker deployment guide.
+
 ### Using uv (Recommended - Fast!)
 
 1. **Install uv** (if not already installed):
