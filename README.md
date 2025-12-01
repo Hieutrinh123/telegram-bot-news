@@ -56,17 +56,20 @@ This project contains **two independent crawlers**:
 
 **Run the scheduler** (posts daily summaries):
 ```bash
-python main.py
+uv run python main.py
+# or without uv: python main.py
 ```
 
 **Run summary immediately** (for testing):
 ```bash
-python main.py --now
+uv run python main.py --now
+# or without uv: python main.py --now
 ```
 
 **Test the crawler only**:
 ```bash
-python crawler.py
+uv run python crawler.py
+# or without uv: python crawler.py
 ```
 
 ### How It Works
@@ -95,7 +98,8 @@ Cbb0fe
 
 **Run the Twitter crawler**:
 ```bash
-python twitter_crawler.py
+uv run python twitter_crawler.py
+# or without uv: python twitter_crawler.py
 ```
 
 This will:
@@ -114,12 +118,42 @@ This will:
 
 ## Installation
 
-1. **Navigate to project directory**:
+### Using uv (Recommended - Fast!)
+
+1. **Install uv** (if not already installed):
    ```bash
-   cd /Users/jonestrinh/.gemini/antigravity/scratch/telegram-news-bot
+   curl -LsSf https://astral.sh/uv/install.sh | sh
    ```
 
-2. **Install dependencies**:
+2. **Navigate to project directory**:
+   ```bash
+   cd telegram-bot-news
+   ```
+
+3. **Install dependencies** (uv automatically creates a virtual environment):
+   ```bash
+   uv sync
+   ```
+
+4. **Run commands** using uv:
+   ```bash
+   uv run python main.py
+   ```
+
+### Using pip (Traditional)
+
+1. **Navigate to project directory**:
+   ```bash
+   cd telegram-bot-news
+   ```
+
+2. **Create virtual environment**:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
@@ -146,22 +180,22 @@ telegram-news-bot/
 
 **Test Telegram crawler**:
 ```bash
-python crawler.py
+uv run python crawler.py
 ```
 
 **Test Twitter crawler**:
 ```bash
-python twitter_crawler.py
+uv run python twitter_crawler.py
 ```
 
 **Test summarizer**:
 ```bash
-python summarizer.py
+uv run python summarizer.py
 ```
 
 **Test bot**:
 ```bash
-python bot.py
+uv run python bot.py
 ```
 
 ## Troubleshooting

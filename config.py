@@ -25,7 +25,7 @@ class Config:
     @staticmethod
     def load_channels():
         """Load channel list from tele_channels.txt file"""
-        channels_file = os.path.join(os.path.dirname(__file__), 'news source', 'tele_channels.txt')
+        channels_file = os.path.join(os.path.dirname(__file__), 'news-source', 'tele_channels.txt')
         channels = []
         
         if os.path.exists(channels_file):
@@ -53,7 +53,7 @@ class Config:
     @staticmethod
     def load_twitter_accounts():
         """Load Twitter account list from twitter_channels.txt file"""
-        twitter_file = os.path.join(os.path.dirname(__file__), 'news source', 'twitter_channels.txt')
+        twitter_file = os.path.join(os.path.dirname(__file__), 'news-source', 'twitter_channels.txt')
         accounts = []
         
         if os.path.exists(twitter_file):
