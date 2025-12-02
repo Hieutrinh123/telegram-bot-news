@@ -19,7 +19,7 @@ env/
 .env.local
 
 # Session files (will be generated in container)
-*.session
+# *.session
 *.session-journal
 
 # IDE
