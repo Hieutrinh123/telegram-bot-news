@@ -5,6 +5,7 @@ description = "A bot that crawls content from Telegram channels and Twitter acco
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "apscheduler>=3.11.1",
     "openai==1.12.0",
     "python-dateutil==2.8.2",
     "python-dotenv==1.0.0",

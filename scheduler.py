@@ -2,10 +2,10 @@
 Scheduler for running daily news summaries.
 """
 import asyncio
-import schedule
-import time
 from datetime import datetime
 from pytz import timezone
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
 from crawler import crawl_channels
 from summarizer import summarize_messages
 from bot import send_summary
@@ -54,24 +54,9 @@ async def run_daily_summary():
     
     print("="*60 + "\n")
 
-def schedule_daily_summary():
+async def run_scheduler_async():
     """
-    Schedule the daily summary to run at the configured time.
-    """
-    schedule_time = f"{Config.SUMMARY_HOUR:02d}:{Config.SUMMARY_MINUTE:02d}"
-    
-    print(f"⏰ Scheduling daily summary at {schedule_time}")
-    
-    # Schedule the job
-    schedule.every().day.at(schedule_time).do(
-        lambda: asyncio.run(run_daily_summary())
-    )
-    
-    print(f"✅ Scheduler configured! Next run: {schedule.next_run()}\n")
-
-def run_scheduler():
-    """
-    Run the scheduler continuously.
+    Run the scheduler continuously with APScheduler (async version).
     """
     print("="*60)
     print("🤖 Telegram News Bot - Scheduler Started")
@@ -81,18 +66,49 @@ def run_scheduler():
     print(f"📤 Posting to: {Config.TARGET_CHANNEL_ID}")
     print(f"⏰ Schedule: Daily at {Config.SUMMARY_HOUR:02d}:{Config.SUMMARY_MINUTE:02d} ICT (UTC+7)")
     print("="*60 + "\n")
-    
-    # Schedule the daily job
-    schedule_daily_summary()
-    
+
+    # Create scheduler with ICT timezone
+    scheduler = AsyncIOScheduler(timezone=ICT)
+
+    # Schedule the daily job with proper timezone support
+    trigger = CronTrigger(
+        hour=Config.SUMMARY_HOUR,
+        minute=Config.SUMMARY_MINUTE,
+        timezone=ICT
+    )
+
+    scheduler.add_job(
+        run_daily_summary,
+        trigger=trigger,
+        id='daily_summary',
+        name='Daily News Summary',
+        replace_existing=True
+    )
+
+    # Start the scheduler
+    scheduler.start()
+
+    # Get next run time in ICT
+    next_run = scheduler.get_job('daily_summary').next_run_time
+    if next_run:
+        next_run_ict = next_run.astimezone(ICT)
+        print(f"✅ Scheduler configured! Next run: {next_run_ict.strftime('%Y-%m-%d %H:%M:%S %Z')}\n")
+
     # Keep running
     try:
+        # Run forever using asyncio sleep
         while True:
-            schedule.run_pending()
-            time.sleep(60)  # Check every minute
-    except KeyboardInterrupt:
+            await asyncio.sleep(3600)  # Sleep for 1 hour, then continue
+    except (KeyboardInterrupt, SystemExit):
         print("\n\n⚠️  Scheduler stopped by user")
+        scheduler.shutdown()
         print("="*60)
+
+def run_scheduler():
+    """
+    Wrapper to run the async scheduler.
+    """
+    asyncio.run(run_scheduler_async())
 
 if __name__ == '__main__':
     run_scheduler()
