@@ -9,7 +9,7 @@ from config import Config
 async def check_messages():
     """Check recent messages from overheardonct channel"""
     client = TelegramClient(
-        'news_bot_user_session',
+        'sessions/news_bot_user_session',
         Config.TELEGRAM_API_ID,
         Config.TELEGRAM_API_HASH
     )

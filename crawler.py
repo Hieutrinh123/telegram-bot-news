@@ -12,7 +12,7 @@ class ChannelCrawler:
     def __init__(self):
         # Use user session for reading channels (bots can't read channel history)
         self.client = TelegramClient(
-            'news_bot_user_session',  # Session file for user authentication
+            'sessions/news_bot_user_session',  # Session file for user authentication
             Config.TELEGRAM_API_ID,
             Config.TELEGRAM_API_HASH
         )
@@ -20,16 +20,25 @@ class ChannelCrawler:
     async def crawl_channels(self, hours=24):
         """
         Crawl messages from configured channels within the specified time window.
-        
+
         Args:
             hours (int): Number of hours to look back (default: 24)
-        
+
         Returns:
             dict: Messages grouped by channel
         """
         print(f"🔍 Starting to crawl channels for the last {hours} hours...")
-        
-        await self.client.start()
+
+        # Connect and check authorization
+        await self.client.connect()
+
+        if not await self.client.is_user_authorized():
+            print("❌ Session not authorized!")
+            print("Please run the authentication script first to authorize the session.")
+            await self.client.disconnect()
+            return {}
+
+        print("✅ Session authorized")
         
         cutoff_time = datetime.now() - timedelta(hours=hours)
         all_messages = {}
