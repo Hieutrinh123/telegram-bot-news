@@ -123,7 +123,7 @@ Requirements:
 
     def format_onchain_summary(self, top_movements):
         """
-        Format the top movements for the summary.
+        Format the top movements for the summary with Markdown V2 escaping.
         
         Args:
             top_movements (list): List of movement objects
@@ -132,19 +132,42 @@ Requirements:
             str: Formatted bullet points with clickable links
         """
         if not top_movements:
-            return "- No significant onchain movements detected."
+            return "\\- No significant onchain movements detected\\."
             
         bullets = []
         for mov in top_movements:
             desc = mov.get('description', '').rstrip('.')
             link = mov.get('link', '')  # Changed from 'url' to 'link'
             
-            # Don't add volume here - the AI already includes it in the description
+            # Escape special characters in description for Markdown V2
+            # But we need to preserve the link syntax
+            escaped_desc = self._escape_markdown_v2(desc)
             
             # Add link in format: description ([link](url))
+            # In Markdown V2, links are formatted as [text](url) where text is escaped but url is not
             if link:
-                bullets.append(f"- {desc} ([link]({link}))")
+                bullets.append(f"\\- {escaped_desc} \\([link]({link})\\)")
             else:
-                bullets.append(f"- {desc}")
+                bullets.append(f"\\- {escaped_desc}")
             
         return "\n\n".join(bullets)
+    
+    def _escape_markdown_v2(self, text):
+        """
+        Escape special characters for Telegram Markdown V2.
+        
+        Args:
+            text (str): Text to escape
+            
+        Returns:
+            str: Escaped text safe for Markdown V2
+        """
+        # Characters that need to be escaped in Markdown V2
+        special_chars = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']
+        
+        # Escape each special character
+        for char in special_chars:
+            text = text.replace(char, f'\\{char}')
+        
+        return text
+

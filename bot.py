@@ -32,11 +32,11 @@ class NewsBot:
             
             print(f"📤 Sending summary to channel {channel_id}...")
             
-            # Send message with Markdown formatting
+            # Send message with Markdown V2 formatting
             message = await self.bot.send_message(
                 chat_id=channel_id,
                 text=summary_text,
-                parse_mode=ParseMode.MARKDOWN
+                parse_mode=ParseMode.MARKDOWN_V2
             )
             
             print(f"✅ Summary posted successfully! Message ID: {message.message_id}")
@@ -48,7 +48,7 @@ class NewsBot:
     
     async def send_test_message(self):
         """Send a test message to verify bot configuration"""
-        test_text = "🤖 *Test Message*\n\nThis is a test message from the News Bot.\n\n_If you see this, the bot is configured correctly!_"
+        test_text = "🤖 *Test Message*\n\nThis is a test message from the News Bot\\.\n\n_If you see this, the bot is configured correctly\\!_"
         return await self.send_summary(test_text)
 
 async def send_summary(summary_text):

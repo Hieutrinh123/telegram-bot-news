@@ -4,6 +4,28 @@ Extracts main bullet points from crawled messages.
 """
 from openai import OpenAI
 from config import Config
+import re
+
+def escape_markdown_v2(text):
+    """
+    Escape special characters for Telegram Markdown V2.
+    
+    Args:
+        text (str): Text to escape
+        
+    Returns:
+        str: Escaped text safe for Markdown V2
+    """
+    # Characters that need to be escaped in Markdown V2
+    # Note: Don't escape inside code blocks or pre-formatted text
+    special_chars = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']
+    
+    # Escape each special character
+    for char in special_chars:
+        text = text.replace(char, f'\\{char}')
+    
+    return text
+
 
 class MessageSummarizer:
     """Summarizes Telegram messages using AI"""
@@ -97,20 +119,32 @@ Provide ONLY the bullet points, no introduction or conclusion.
         return all_bullets
 
     def _format_final_summary(self, news_bullets, onchain_text):
-        """Format the final combined summary"""
+        """Format the final combined summary with Markdown V2 escaping"""
         from datetime import datetime
         
         date_str = datetime.now().strftime('%d-%m-%Y')
         
-        summary = f"🗓 Summary {date_str}\n\n"
+        # Escape the date for Markdown V2
+        summary = f"🗓 Summary {escape_markdown_v2(date_str)}\n\n"
         
         summary += "🔥 Daily News\n\n"
-        summary += "\n\n".join(news_bullets)
+        
+        # Escape each news bullet
+        escaped_bullets = []
+        for bullet in news_bullets:
+            # Don't escape the leading "- " marker
+            if bullet.startswith('- '):
+                escaped_bullets.append(f"\\- {escape_markdown_v2(bullet[2:])}")
+            else:
+                escaped_bullets.append(escape_markdown_v2(bullet))
+        
+        summary += "\n\n".join(escaped_bullets)
         
         summary += "\n\n🤓 Onchain actions\n\n"
         summary += onchain_text
         
         return summary
+
 
     def summarize_messages(self, messages_by_channel):
         """Legacy method for backward compatibility"""
